@@ -1,9 +1,10 @@
-import matplotlib.pyplot as plt
-import numpy as np
 import os
 import tensorflow as tf
-
+import numpy as np
 from sklearn.model_selection import train_test_split
+
+
+tf.keras.mixed_precision.set_global_policy('mixed_float16')
 
 
 def load_coordinate(file_path, layer_shift = 16):
@@ -67,56 +68,101 @@ def load_and_stack_data(data_folder="data/suite2p", num_planes=50):
         if os.path.exists(file_path):
             data = np.load(file_path)
             stacked_data.append(data)
+            #print(i, data.shape)
         else:
             print(f"File not found: {file_path}")
     
-    print("done")
     # Stack all arrays vertically
-    combined_array = np.vstack(stacked_data)
-    return combined_array
+    combined_array = np.vstack(stacked_data).T
+    print("loaded raw data")
 
-
-def nn(data):
     #data = np.random.rand(100, 50)  # Example data with 100 data points and 50 time steps
-
-    # Transpose data so that time steps are rows instead of columns
-    data = data.T  # New shape will be (time_steps, data_points), i.e., (50, 100)
-
     # Define input (X) and shifted output (y)
-    X = data  # Use all rows (time steps) and all columns (data points) as input
-    y = np.zeros_like(data)  # Initialize y with the same shape as data
-    y[:-1, :data.shape[1] // 2] = data[1:, :data.shape[1] // 2]  # Shifted top half for target variable
+    x = combined_array[:-1]  # Use all rows (time steps) and all columns (data points) as input
+    y = np.zeros((1211, 9508))  # Initialize y with the same shape as data
+    y[:, 0:9508] = combined_array[1:, 0:9508]  # Shifted top half for target variable
 
     # Expand dimensions if necessary to make the data 3D (samples, timesteps, features)
-    X = np.expand_dims(X, axis=-1)
-    y = np.expand_dims(y, axis=-1)
+    # x = np.expand_dims(x, axis=-1)
+    # y = np.expand_dims(y, axis=-1)
+
+    print(f"{x.shape = }, {y.shape = }")
 
     # Split into train and test sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.5, random_state=42)
+    print(f"{x_train.shape = }, {x_test.shape = }, {y_train.shape = }, {y_test.shape = }")
+    print("created train/test set")
+
+    return x_train, x_test, y_train, y_test 
+
+
+def save_to_tfrecord(data, file_path):
+    with tf.io.TFRecordWriter(file_path) as writer:
+        for array in data:
+            feature = {
+                'data': tf.train.Feature(float_list=tf.train.FloatList(value=array.flatten()))
+            }
+            example = tf.train.Example(features=tf.train.Features(feature=feature))
+            writer.write(example.SerializeToString())
+    print(f"{file_path} saved to tfrecord")
+
+
+def parse_tfrecord(example_proto):
+    feature_description = {'data': tf.io.FixedLenFeature([605], tf.float32)}
+    # Parse the input `tf.train.Example` proto using the dictionary above.
+    example = tf.io.parse_single_example(example_proto, feature_description)
+    return example['data']
+
+
+# Function to load TFRecord files with batching
+def load_tfrecord(file_path, batch_size):
+    raw_dataset = tf.data.TFRecordDataset(file_path)
+    parsed_dataset = raw_dataset.map(parse_tfrecord)
+    return parsed_dataset.batch(batch_size)
+
+
+def nn(filepath):
+    batch_size = 1
+    x_train = load_tfrecord('data/x_train.tfrecord', batch_size)
+    y_train = load_tfrecord('data/y_train.tfrecord', batch_size)
+
+    # data = tf.data.TFRecordDataset(filepath)
+    # data = data.batch(20).prefetch(tf.data.AUTOTUNE) 
 
     # Define a simple model with a direct connection between input and output
     model = tf.keras.Sequential([
-        tf.keras.layers.Flatten(input_shape=(X.shape[1], X.shape[2])),  # Flatten to ensure direct mapping
-        tf.keras.layers.Dense(y.shape[1], activation='linear')  # Direct connection to output layer
+        tf.keras.layers.Input(shape=(401693,), dtype=tf.float16),
+        tf.keras.layers.Flatten(),  # Flatten to ensure direct mapping
+        # tf.keras.layers.Flatten(shape=(401693,)),  # Flatten to ensure direct mapping
+        tf.keras.layers.Dense(9508, activation='linear')  # Direct connection to output layer
     ])
 
     # Compile the model
     model.compile(optimizer='adam', loss='mae')
 
     # Train the model
-    history = model.fit(X_train, y_train, epochs=10, batch_size=16, validation_data=(X_test, y_test))
+    train_dataset = tf.data.Dataset.zip((x_train, y_train)).prefetch(tf.data.AUTOTUNE)
+    history = model.fit(train_dataset, epochs=10, batch_size=16) #, validation_data=(X_test, y_test))
 
     # Evaluate the model
-    loss = model.evaluate(X_test, y_test)
-    print("Test loss:", loss)
+    #loss = model.evaluate(x_test, y_test)
+    #print("Test loss:", loss)
 
 
 def main():
-    data = load_and_stack_data()
-    nn(data)
-    x, y, z, brightness = load_coordinate('data/suite2p')
-    print(x, y, z, brightness)
-    load_timesteps('data/suite2p')
+
+    if not os.path.exists('data/x_train.tfrecord'):
+        x_train, x_test, y_train, y_test  = load_and_stack_data()
+        save_to_tfrecord(x_train, 'data/x_train.tfrecord')
+        save_to_tfrecord(x_test, 'data/x_test.tfrecord')
+        save_to_tfrecord(y_train, 'data/y_train.tfrecord')
+        save_to_tfrecord(y_test, 'data/y_test.tfrecord')
+        # numpy_to_tfrecord(data, 'data/data.tfrecord')
+
+    nn('data/')
+    # x, y, z, brightness = load_coordinate('data/suite2p')
+    # print(x, y, z, brightness)
+    # load_timesteps('data/suite2p')
 
 
 if __name__=='__main__':
