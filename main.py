@@ -89,7 +89,7 @@ def load_and_stack_data(data_folder="data/suite2p", num_planes=50):
     print(f"{x.shape = }, {y.shape = }")
 
     # Split into train and test sets
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.5, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
     print(f"{x_train.shape = }, {x_test.shape = }, {y_train.shape = }, {y_test.shape = }")
     print("created train/test set")
 
@@ -131,7 +131,7 @@ def nn(filepath):
 
     # Define a simple model with a direct connection between input and output
     model = tf.keras.Sequential([
-        tf.keras.layers.Input(shape=(401693,), dtype=tf.float16),
+        tf.keras.layers.Input(shape=(605,), dtype=tf.float16),
         tf.keras.layers.Flatten(),  # Flatten to ensure direct mapping
         # tf.keras.layers.Flatten(shape=(401693,)),  # Flatten to ensure direct mapping
         tf.keras.layers.Dense(9508, activation='linear')  # Direct connection to output layer
@@ -149,6 +149,30 @@ def nn(filepath):
     #print("Test loss:", loss)
 
 
+def nn_batch(x_train, x_test, y_train, y_test):
+    # Assuming `data` and `labels` are your large NumPy arrays
+    # data = np.array(...)  # Replace with your actual data
+    # labels = np.array(...)
+
+    # Convert to TensorFlow Dataset
+    dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
+    dataset = dataset.batch(1).prefetch(1)  # Use batch size of 1 and prefetch to improve performance
+
+    # Define your model
+    model = tf.keras.models.Sequential([
+        tf.keras.layers.Input(shape=(x_train.shape[1],)),  # Adjust input shape
+        # tf.keras.layers.Dense(units=10000, activation='relu'),  # Example layer
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(units=9508, activation='linear') # , activation='linear')  # Example output
+    ])
+
+    # Compile and train the model
+    print("compiling")
+    model.compile(optimizer='adam', loss='mae')  # Adjust as needed
+    print("start training")
+    model.fit(dataset, epochs=10, verbose=1)  # Adjust epochs as needed
+
+
 def main():
 
     if not os.path.exists('data/x_train.tfrecord'):
@@ -159,7 +183,11 @@ def main():
         save_to_tfrecord(y_test, 'data/y_test.tfrecord')
         # numpy_to_tfrecord(data, 'data/data.tfrecord')
 
-    nn('data/')
+    # nn('data/')
+
+    x_train, x_test, y_train, y_test = load_and_stack_data()
+    nn_batch(x_train, x_test, y_train, y_test)
+
     # x, y, z, brightness = load_coordinate('data/suite2p')
     # print(x, y, z, brightness)
     # load_timesteps('data/suite2p')
