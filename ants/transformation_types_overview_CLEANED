@@ -1,0 +1,204 @@
+>>>> Translation (1 min)
+# Translation transformation.
+antsRegistration -d 3 -r [0x16911bd0,0x16911bf0,1] -m mattes[0x16911bd0,0x16911bf0,1,32,regular,0.2] -t Translation[0.25] -c 2100x1200x1200x10 -s 3x2x1x0 -f 6x4x2x1 -u 1 -z 1 -o [/tmp/tmplojf4o64,0x16c13c10,0x16b30600] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> Rigid (3 min)
+# Rigid transformation: Only rotation and translation.
+antsRegistration -d 3 -r [0x16604200,0x16b77cc0,1] -m mattes[0x16604200,0x16b77cc0,1,32,regular,0.2] -t Rigid[0.25] -c 2100x1200x1200x10 -s 3x2x1x0 -f 6x4x2x1 -u 1 -z 1 -o [/tmp/tmpcdy0rg0k,0x16b5aa90,0x16c0a4b0] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> Similarity (2 min
+# Similarity transformation: scaling, rotation and translation.
+antsRegistration -d 3 -r [0x1672c2f0,0x16ca5b40,1] -m mattes[0x1672c2f0,0x16ca5b40,1,32,regular,0.2] -t Similarity[0.25] -c 2100x1200x1200x10 -s 3x2x1x0 -f 6x4x2x1 -u 1 -z 1 -o [/tmp/tmp0zkbmvad,0x16a78530,0x170ea360] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> QuickRigid (1 min)
+# Rigid transformation: Only rotation and translation. May be useful for quick visualization fixes.
+antsRegistration -d 3 -r [0x17506d20,0x165af170,1] -m mattes[0x17506d20,0x165af170,1,32,regular,0.2] -t Rigid[0.25] -c 20x20x0x0 -s 3x2x1x0 -f 6x4x2x1 -u 1 -z 1 -o [/tmp/tmp5n__mc4c,0x16f32310,0x16852540] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> DenseRigid (9 min)
+# Rigid transformation: Only rotation and translation. Employs dense sampling during metric estimation.’
+antsRegistration -d 3 -r [0x16c29e40,0x167d55a0,1] -m mattes[0x16c29e40,0x167d55a0,1,32,regular,1.0] -t Rigid[0.25] -c 2100x1200x1200x10 -s 3x2x1x0 -f 6x4x2x1 -u 1 -z 1 -o [/tmp/tmpjfbpz1e5,0x15f12910,0x164dffc0] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> BOLDRigid (4 min)
+# Rigid transformation: Parameters typical for BOLD to BOLD intrasubject registration
+antsRegistration -d 3 -r [0x16fdead0,0x16f6db30,1] -m mattes[0x16fdead0,0x16f6db30,1,32,regular,0.2] -t Rigid[0.25] -c 100x20 -s 1x0 -f 2x1 -u 1 -z 1 -o [/tmp/tmpaql0ox4p,0x16c1fe70,0x16cb04e0] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> Affine (2 min)
+# Affine transformation: Rigid + scaling.
+antsRegistration -d 3 -r [0x173d2750,0x16a458b0,1] -m mattes[0x173d2750,0x16a458b0,1,32,regular,0.2] -t Affine[0.25] -c 2100x1200x1200x10 -s 3x2x1x0 -f 6x4x2x1 -u 1 -z 1 -o [/tmp/tmp3dcjcxyo,0x16cb50a0,0x1622ff10] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> AffineFast (1 min)
+# Fast version of Affine.
+antsRegistration -d 3 -r [0x15c5f680,0x16e16e60,1] -m mattes[0x15c5f680,0x16e16e60,1,32,regular,0.2] -t Affine[0.25] -c 2100x1200x0x0 -s 3x2x1x0 -f 6x4x2x1 -u 1 -z 1 -o [/tmp/tmp4ofroa36,0x160934f0,0x15055ca0] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> BOLDAffine (4 min)
+# Affine transformation: Parameters typical for BOLD to BOLD intrasubject registration
+antsRegistration -d 3 -r [0x156e9b10,0x1697cc10,1] -m mattes[0x156e9b10,0x1697cc10,1,32,regular,0.2] -t Affine[0.25] -c 100x20 -s 1x0 -f 2x1 -u 1 -z 1 -o [/tmp/tmppuhdq9id,0x1759ed60,0x1685ac00] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> TRSAA (7 min)
+# translation, rigid, similarity, affine (twice). please set regIterations if using this option. this would be used in cases where you want a really high quality affine mapping (perhaps with mask). 
+antsRegistration -d 3 -r [0x168c68f0,0x175bb340,1] -m mattes[0x168c68f0,0x175bb340,1,32,regular,0.2] -t Translation[1] -c 2000x2000x0 -s 2x1x0 -f 4x2x1 -x [NA,NA] -m mattes[0x168c68f0,0x175bb340,1,32,regular,0.2] -t Rigid[1] -c 2000x2000x0 -s 2x1x0 -f 4x2x1 -x [NA,NA] -m mattes[0x168c68f0,0x175bb340,1,32,regular,0.2] -t Similarity[1] -c 2000x2000x0 -s 2x1x0 -f 4x2x1 -x [NA,NA] -m mattes[0x168c68f0,0x175bb340,1,32,regular,0.2] -t Affine[1] -c [40x20x0,1.e-7,10] -s 2x1x0 -f 4x2x1 -x [NA,NA] -m mattes[0x168c68f0,0x175bb340,1,32,regular,0.2] -t Affine[1] -c [40x20x0,1.e-7,10] -s 2x1x0 -f 4x2x1 -u 1 -z 1 -o [/tmp/tmpozy57ura,0x176468e0,0x169ed980] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> ElasticSyN (9 min)
+# Symmetric normalization: Affine + deformable transformation, with mutual information as optimization metric and elastic regularization.
+antsRegistration -d 3 -r [0x16c6c8d0,0x16bea6f0,1] -m mattes[0x16c6c8d0,0x16bea6f0,1,32,regular,0.2] -t Affine[0.25] -c 2100x1200x200x0 -s 3x2x1x0 -f 4x2x2x1 -x [NA,NA] -m mattes[0x16c6c8d0,0x16bea6f0,1,32] -t SyN[0.200000,3.000000,0.000000] -c [40x20x0,1e-7,8] -s 2x1x0 -f 4x2x1 -u 1 -z 1 -o [/tmp/tmp5q3ldm2u,0x15a7a3d0,0x16e18f20] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> SyN (10 min)
+# Symmetric normalization: Affine + deformable transformation, with mutual information as optimization metric.
+antsRegistration -d 3 -r [0x16253410,0x170755c0,1] -m mattes[0x16253410,0x170755c0,1,32,regular,0.2] -t Affine[0.25] -c 2100x1200x1200x0 -s 3x2x1x0 -f 4x2x2x1 -x [NA,NA] -m mattes[0x16253410,0x170755c0,1,32] -t SyN[0.200000,3.000000,0.000000] -c [40x20x0,1e-7,8] -s 2x1x0 -f 4x2x1 -u 1 -z 1 -o [/tmp/tmpu0vgnzzr,0x16418e60,0x150f11c0] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> SyNRA (12 min)
+# Symmetric normalization: Rigid + Affine + deformable transformation, with mutual information as optimization metric.
+antsRegistration -d 3 -r [0x163d4da0,0x16889e60,1] -m mattes[0x163d4da0,0x16889e60,1,32,regular,0.2] -t Rigid[0.25] -c 2100x1200x1200x0 -s 3x2x1x0 -f 4x2x2x1 -x [NA,NA] -m mattes[0x163d4da0,0x16889e60,1,32,regular,0.2] -t Affine[0.25] -c 2100x1200x1200x0 -s 3x2x1x0 -f 4x2x2x1 -x [NA,NA] -m mattes[0x163d4da0,0x16889e60,1,32] -t SyN[0.200000,3.000000,0.000000] -c [40x20x0,1e-7,8] -s 2x1x0 -f 4x2x1 -u 1 -z 1 -o [/tmp/tmpdb5cc_g5,0x16ac4b80,0x16bd6460] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> SyNOnly (7 min)
+# Symmetric normalization: no initial transformation, with mutual information as optimization metric. Assumes images are aligned by an inital transformation. Can be useful if you want to run an unmasked affine followed by masked deformable registration.
+antsRegistration -d 3 -r [0x175848d0,0x16254cb0,1] -m mattes[0x175848d0,0x16254cb0,1,32] -t SyN[0.200000,3.000000,0.000000] -c [40x20x0,1e-7,8] -s 2x1x0 -f 4x2x1 -u 1 -z 1 -o [/tmp/tmpdwsii4ar,0x16978bd0,0x168ad8a0] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> SyNCC (7h59)
+# SyN, but with cross-correlation as the metric.
+antsRegistration 
+-d 3 
+-r [0x166a39a0,0x16dd3170,1] 
+-m mattes[0x166a39a0,0x16dd3170,1,32,regular,0.2] 
+-t Rigid[1] 
+-c 2100x1200x1200x0 
+-s 3x2x1x0 
+-f 4x4x2x1 
+-x [NA,NA] 
+-m mattes[0x166a39a0,0x16dd3170,1,32,regular,0.2] 
+-t Affine[1] 
+-c 1200x1200x100 
+-s 2x1x0 
+-f 4x2x1 
+-x [NA,NA] 
+-m CC[0x166a39a0,0x16dd3170,1,4] 
+-t SyN[0.15,3,0] 
+-c [2100x1200x1200x20,1e-7,8] 
+-s 3x2x1x0 
+-f 4x3x2x1 
+-u 1 
+-z 1 
+-o [/tmp/tmppwbtt65h,0x16e8d090,0x172cdeb0] 
+-x [NA,NA] 
+--float 1 
+--write-composite-transform 0 
+-v 1
+
+>>>> SyNabp (38 min)
+# SyN optimized for abpBrainExtraction
+antsRegistration 
+-d 3 
+-r [0x1759ed40,0x166f0060,1] 
+-m mattes[0x1759ed40,0x166f0060,1,32,regular,0.25] 
+-t Rigid[0.1] 
+-c 1000x500x250x100 
+-s 4x2x1x0 
+-f 8x4x2x1 
+-x [NA,NA] 
+-m mattes[0x1759ed40,0x166f0060,1,32,regular,0.25] 
+-t Affine[0.1] 
+-c 1000x500x250x100 
+-s 4x2x1x0 
+-f 8x4x2x1 
+-x [NA,NA] 
+-m CC[0x1759ed40,0x166f0060,0.5,4] 
+-t SyN[0.1,3,0] 
+-c 50x10x0 
+-s 2x1x0 
+-f 4x2x1 
+-u 1 
+-z 1 
+-o [/tmp/tmpbluaousz,0x167a3b10,0x160b27e0] 
+-x [NA,NA] 
+--float 1 
+--write-composite-transform 0 
+-v 1
+
+>>>>Josh Slow
+antsRegistration 
+--dimensions			-d	3 
+--float					1 
+--output			-o 	[{registration_output_name}, {registration_output_name}.nii] 
+--interpolation			-n 	WelchWindowedSinc 
+--winsorize-image-intensities 		[0.01,0.99] 
+--use-histogram-matching	-j	1 
+--regularization		-r 	[{fixed_image}, {moved_image}, 1] 
+
+--transform			-t 	rigid[0.1] 
+--metric			-m 	MI[{fixed_image}, {moved_image},1,32, Regular,0.5] 
+--convergence			-c 	[1000x500x500x500,1e-8,10] 
+--shrinkFactors			-f 	8x4x2x1 
+--smoothingSigmas		-s 	2x1x1x0vox 
+
+--transform			-t 	Affine[0.1] 
+--metric			-m 	MI[{fixed_image}, {moved_image},1,32, Regular,0.5] 
+--convergence			-c 	[1000x500x500x500,1e-8,10] 
+--shrink-factors		-f 	8x4x2x1 
+--smoothing-sigmas		-s 	2x1x1x0vox 
+
+--transform			-t 	SyN[0.05,6,0.5] 
+--metric			-m 	CC[{fixed_image}, {moved_image},1,2] 
+--convergence			-c	[1000x500x500x500x500,1e-7,10] 
+--shrink-factors		-f	12x8x4x2x1 
+--smoothing-sigmas		-s	4x3x2x1x0vox 
+--verbose			-v 	1
+
+---
+		
+--mask				-x
+--iterations			-i
+--help				-h
+--collapse-output-transforms	-z
+
+>>>>Josh Fast
+antsRegistrationSyNQuick.sh 
+--dimensions			-d 	3 
+--shrinkFactors			-f 	{fixed_image} 
+--metric			-m 	{moved_image}  
+--output			-o 	{registration_output_name} 
+				-n 	{num_cores} 
+--polydegree			-p 	f 
+--use-histogram-matching	-j 	1
+
+>>>> SyNBold (16 min)
+# SyN, but optimized for registrations between BOLD and T1 images.
+antsRegistration 
+-d 3 
+-r [0x17481790,0x17561120,1] 
+-m mattes[0x17481790,0x17561120,1,32,regular,0.2] 
+-t Rigid[0.25] 
+-c [1200x1200x100,1e-6,5] 
+-s 2x1x0 
+-f 4x2x1 
+-x [NA,NA] 
+-m mattes[0x17481790,0x17561120,1,32] 
+-t SyN[0.200000,3.000000,0.000000] 
+-c [40x20x0,1e-7,8] 
+-s 2x1x0 
+-f 4x2x1 
+-u 1 
+-z 1 
+-o [/tmp/tmpma47fn4c,0x16093510,0x1660b490] 
+-x [NA,NA] 
+--float 1 
+--write-composite-transform 0 -v 1
+
+>>>> SyNBoldAff (19 min)
+# SyN, but optimized for registrations between BOLD and T1 images, with additional affine step.
+antsRegistration -d 3 -r [0x150f1290,0x1756e140,1] -m mattes[0x150f1290,0x1756e140,1,32,regular,0.2] 
+-t Rigid[0.25] -c [1200x1200x100,1e-6,5] -s 2x1x0 -f 4x2x1 -x [NA,NA] -m mattes[0x150f1290,0x1756e140,1,32,regular,0.2] 
+-t Affine[0.25] -c [200x20,1e-6,5] -s 1x0 -f 2x1 -x [NA,NA] -m mattes[0x150f1290,0x1756e140,1,32] 
+-t SyN[0.200000,3.000000,0.000000] -c [40x20x0,1e-7,8] -s 2x1x0 -f 4x2x1 -u 1 -z 1 -o [/tmp/tmpetb83vzj,0x16ec73a0,0x16cdd2d0] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> SyNAggro (14 min)
+# SyN, but with more aggressive registration (fine-scale matching and more deformation). Takes more time than SyN.
+antsRegistration -d 3 -r [0x174e4700,0x16d46310,1] -m mattes[0x174e4700,0x16d46310,1,32,regular,0.2] -t Affine[0.25] -c 2100x1200x1200x100 -s 3x2x1x0 -f 4x2x2x1 -x [NA,NA] -m mattes[0x174e4700,0x16d46310,1,32] -t SyN[0.200000,3.000000,0.000000] -c [40x20x0,1e-7,8] -s 2x1x0 -f 4x2x1 -u 1 -z 1 -o [/tmp/tmpr_o0zgq9,0x16493c90,0x170948e0] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>> TVMSQ (1h12)
+# time-varying diffeomorphism with mean square metric
+antsRegistration -d 3 -m mattes[0x166a26d0,0x168af680,1,32] -t TimeVaryingVelocityField[0.2, 4, 0.0,0.0, 0.5,0 ] -c [40x20x0,1e-7,8] -s 2x1x0 -f 4x2x1 -u 1 -z 0 -o [/tmp/tmp4mana0y3,0x160cd860,0x15f82e60] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
+>>>>TVMSQC ( min) 22:18-XX:XX
+# time-varying diffeomorphism with mean square metric for very large deformation
+antsRegistration -d 3 -m demons[0x174de220,0x16129ad0,0.5,0] -m meansquares[0x174de220,0x16129ad0,1,0] -t TimeVaryingVelocityField[0.2, 8, 1.0,0.0, 0.05,0 ] -c [1200x1200x100x20x0,0,5] -s 8x6x4x2x1vox -f 8x6x4x2x1 -u 1 -z 0 -o [/tmp/tmpqb0b5e0q,0x16acca00,0x16442270] -x [NA,NA] --float 1 --write-composite-transform 0 -v 1
+
