@@ -1,0 +1,3 @@
+mongodbhost: mongodb://dbuser:dbpass@dburl:dbport/
+mongodbname: dacapo
+runs_base_dir: /path/to/my/data/storage
